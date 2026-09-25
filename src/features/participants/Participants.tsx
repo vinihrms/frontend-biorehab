@@ -91,7 +91,8 @@ export function StudyParticipants() {
       )
       .map((p) => ({
         value: String(p.id),
-        label: `${p.nome} · ${formatDate(p.nascimento)}`,
+        label: p.nome,
+        description: formatDate(p.nascimento),
       })) || [];
   const filtered =
     rows.data?.filter((p) =>
@@ -229,7 +230,7 @@ export function StudyParticipants() {
                   {
                     name: "participanteId",
                     label: "Participante",
-                    type: "select",
+                    type: "autocomplete",
                     options,
                   },
                 ]}

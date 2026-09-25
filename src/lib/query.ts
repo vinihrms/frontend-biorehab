@@ -24,6 +24,13 @@ export function useResource<T>(path: string, enabled = true) {
     queryKey: ["api", path],
     queryFn: ({ signal }) => request<T>(path, { signal }),
     enabled,
+    ...(["/usuarios", "/participantes"].includes(path)
+      ? {
+          staleTime: 5 * 60_000,
+          gcTime: 30 * 60_000,
+          refetchOnWindowFocus: false,
+        }
+      : {}),
   });
 }
 export function useWrite() {
@@ -38,6 +45,15 @@ export function useWrite() {
       method?: string;
       body?: unknown;
     }) => request(path, { method, body }),
-    onSuccess: () => client.invalidateQueries({ queryKey: ["api"] }),
+    onSuccess: (_data, mutation) =>
+      client.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "api" &&
+          (query.queryKey[1] === "/usuarios"
+            ? mutation.path.startsWith("/usuarios")
+            : query.queryKey[1] === "/participantes"
+              ? mutation.path.startsWith("/participantes")
+              : true),
+      }),
   });
 }

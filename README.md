@@ -1,20 +1,20 @@
 # RehabDATA — frontend evolutivo
 
-SPA React + TypeScript + Vite, com React Router, TanStack Query, React Hook Form + Zod, Tailwind CSS e Vitest. O guia técnico e de contratos é [FRONTEND_CONTEXT.md](../FRONTEND_CONTEXT.md). O backend não foi modificado.
+SPA React + TypeScript + Vite, com React Router, TanStack Query, React Hook Form + Zod, Tailwind CSS e Vitest. O guia técnico e de contratos é [FRONTEND_CONTEXT.md](./FRONTEND_CONTEXT.md). Frontend e backend agora são repositórios separados.
 
 ## Executar
 
 Requisitos: Node.js >= 22.12 e pnpm (lockfile gerado com pnpm 11).
 
 ```sh
-cd frontend
+cd /home/rvaz/Desktop/projs/frontend-biorehab
 pnpm install
 pnpm dev
 ```
 
-Abra o endereço informado pelo Vite (normalmente http://localhost:5173). Inicie separadamente o backend conforme o README da raiz, com MySQL e suas variáveis de ambiente configurados. É necessária uma conta ativa; cadastros novos aguardam aprovação administrativa. Não existe login de demonstração na aplicação.
+Abra o endereço informado pelo Vite (normalmente http://localhost:5173). Inicie separadamente `backend-biorehab`, com MySQL e suas variáveis de ambiente configurados. É necessária uma conta ativa; cadastros novos aguardam aprovação administrativa. Não existe login de demonstração na aplicação.
 
-O proxy de desenvolvimento encaminha `/api` para `http://localhost:3000`. Para outro endereço, crie `frontend/.env.local` usando `.env.example` como referência:
+O proxy de desenvolvimento encaminha `/api` para `http://localhost:3000`. O arquivo local `.env.local` foi preparado para desenvolvimento. Para outro endereço, ajuste:
 
 ```dotenv
 VITE_API_URL=/api
@@ -51,9 +51,9 @@ Inclui cadastro/login, estudos e status, estrutura do estudo, participantes glob
 
 - Sem dados de exemplo, métricas inventadas, atividades recentes, configurações ou busca global no produto.
 - A API não informa o papel do usuário comum. Owner é identificado pela consulta de permissões; collector e viewer não podem ser diferenciados. Ações de coleta podem aparecer para viewer e resultar em 403. O servidor continua sendo a autoridade de acesso.
-- Permissões exigem ID manual do usuário porque não existe busca de usuários ativos.
+- Admins concedem permissões buscando nomes, sem digitar IDs. A consulta de usuários é exclusiva de admin; responsáveis não-admin podem gerenciar permissões existentes, mas precisam do admin para novas inclusões.
 - Apenas CSV está funcional no backend. O exportador atual deriva colunas da primeira linha; confira a integridade antes de usar o arquivo para análise científica (detalhes no contexto).
-- Não há paginação no servidor: pesquisa e filtros são locais.
+- Não há paginação no servidor: pesquisa e filtros são locais. Usuários usam cache em memória de 5 minutos e paginação em `/usuarios?page=1&size=25&q=nome`. O menu inclui pendentes; detalhes permitem editar nome/email/RA/status/perfil e excluir definitivamente, sem alterar senha. Participantes são selecionados por nome e nascimento.
 - Nome de participante limitado a 30 caracteres e unidade de variável a 20 para respeitar o banco. Siglas novas não aceitam hífen devido ao gerador de códigos do backend.
 
 ## Build e publicação futura

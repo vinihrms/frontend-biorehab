@@ -1,5 +1,41 @@
 @import "tailwindcss";
 
+.autocomplete-options {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #dce5e5;
+  border-radius: 8px;
+  margin-top: 5px;
+  background: white;
+}
+.autocomplete-options li {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.autocomplete-options li:hover,
+.autocomplete-options li.highlighted {
+  background: #e6f3ed;
+}
+.autocomplete-options strong,
+.autocomplete-options small {
+  display: block;
+}
+.autocomplete-options small {
+  font-size: 0.75rem;
+  color: #657b80;
+}
+.sidebar nav .nav-submenu {
+  margin-left: 24px;
+  font-size: 0.8rem;
+}
+.users-pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 @theme {
   --color-teal-700: #145b57;
   --font-sans: "Inter", "Segoe UI", Arial, sans-serif;

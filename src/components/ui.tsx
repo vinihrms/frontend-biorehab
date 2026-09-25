@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { Controller, useForm, type Resolver } from "react-hook-form";
+import { Autocomplete, type SearchOption } from "./Autocomplete";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import {
@@ -158,7 +159,7 @@ export interface Field {
   type?: string;
   placeholder?: string;
   help?: string;
-  options?: { value: string; label: string }[];
+  options?: SearchOption[];
   step?: string;
   disabled?: boolean;
   autoComplete?: string;
@@ -180,6 +181,7 @@ export function SchemaForm({
 }) {
   const id = useId();
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -214,7 +216,24 @@ export function SchemaForm({
         {fields.map((field) => (
           <div className="field" key={field.name}>
             <label htmlFor={`${id}-${field.name}`}>{field.label}</label>
-            {field.type === "select" ? (
+            {field.type === "autocomplete" ? (
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: input }) => (
+                  <Autocomplete
+                    id={`${id}-${field.name}`}
+                    options={field.options || []}
+                    value={input.value}
+                    onChange={input.onChange}
+                    onBlur={input.onBlur}
+                    disabled={field.disabled || isSubmitting}
+                    invalid={!!errors[field.name]}
+                    describedBy={`${id}-${field.name}-hint`}
+                  />
+                )}
+              />
+            ) : field.type === "select" ? (
               <select
                 id={`${id}-${field.name}`}
                 {...register(field.name)}

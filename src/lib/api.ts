@@ -72,6 +72,7 @@ export async function request<T>(
     response.headers.get("content-type")?.includes("text/csv")
   )
     return (await response.blob()) as T;
+  if (response.status === 204) return undefined as T;
   const data = await response.json().catch(() => null);
   if (!response.ok || data?.success !== true) {
     throw new ApiError(

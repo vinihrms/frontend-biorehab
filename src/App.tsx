@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   BrowserRouter,
   Link,
@@ -40,6 +40,7 @@ import { PermissionsPage } from "./features/studies/Permissions";
 import { ExportPage } from "./features/studies/Export";
 import { CollectionPage } from "./features/collection/Collection";
 import { PendingUsersPage } from "./features/admin/PendingUsers";
+import { UserDetailPage, UsersLayout, UsersPage } from "./features/admin/Users";
 import { Brand, Empty } from "./components/ui";
 import { queryClient } from "./lib/query";
 
@@ -52,7 +53,7 @@ function Shell() {
     { to: "/estudos", label: "Estudos", icon: BookOpen },
     { to: "/participantes", label: "Participantes", icon: Users },
     ...(session?.user.isAdmin
-      ? [{ to: "/usuarios", label: "Usuários pendentes", icon: UserCheck }]
+      ? [{ to: "/usuarios", label: "Usuários", icon: UserCheck }]
       : []),
     { to: "/exportacoes", label: "Exportações", icon: Download },
   ];
@@ -84,15 +85,27 @@ function Shell() {
         <p className="nav-caption">ESPAÇO DE PESQUISA</p>
         <nav aria-label="Navegação principal">
           {links.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === "/"}
-              onClick={() => setOpen(false)}
-            >
-              <Icon size={19} />
-              {label}
-            </NavLink>
+            <Fragment key={to}>
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/" || to === "/usuarios"}
+                onClick={() => setOpen(false)}
+              >
+                <Icon size={19} />
+                {label}
+              </NavLink>
+              {to === "/usuarios" &&
+                location.pathname.startsWith("/usuarios") && (
+                  <NavLink
+                    className="nav-submenu"
+                    to="/usuarios/pendentes"
+                    onClick={() => setOpen(false)}
+                  >
+                    Usuários pendentes
+                  </NavLink>
+                )}
+            </Fragment>
           ))}
         </nav>
         <div className="sidebar-bottom">
@@ -170,7 +183,11 @@ export function AppRoutes() {
             <Route path="exportacao" element={<ExportPage />} />
           </Route>
           <Route path="participantes" element={<ParticipantsPage />} />
-          <Route path="usuarios" element={<PendingUsersPage />} />
+          <Route path="usuarios" element={<UsersLayout />}>
+            <Route index element={<UsersPage />} />
+            <Route path="pendentes" element={<PendingUsersPage />} />
+            <Route path=":userId" element={<UserDetailPage />} />
+          </Route>
           <Route path="exportacoes" element={<StudiesPage exporting />} />
           <Route
             path="*"
